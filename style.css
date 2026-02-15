@@ -299,60 +299,57 @@ p.profile-bio {
 ::-webkit-scrollbar-thumb { background: var(--phosphor-white); border: 1px solid var(--bsod-blue); }
 
 @media (max-width: 600px) {
-    .bg-art {
-        font-size: 8px !important;
-        line-height: 8px !important;
-        opacity: 0.3;
+    body {
+        overflow: hidden;
+        height: 100vh;
+        position: fixed;
         width: 100%;
-        text-align: center;
+    }
+
+    .bg-art {
+        font-size: 10px !important;
+        line-height: 10px !important;
+        opacity: 0.2;
     }
 
     .window {
-        width: 95% !important;
-        left: 2.5% !important;
-        position: relative !important;
-        top: auto !important;
-        margin-bottom: 20px;
-        max-height: none !important;
+        width: 90% !important;
+        min-width: unset !important;
+        max-height: 70vh;
     }
 
     #win-terminal {
-        display: none !important;
+        display: flex !important;
+        top: 5% !important;
+        left: 5% !important;
+        width: 90% !important;
+    }
+
+    #win-info {
+        top: 15% !important;
+        left: 5% !important;
+    }
+
+    #win-links {
+        top: 40% !important;
+        left: 5% !important;
+    }
+
+    #taskbar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 9999;
     }
 
     .window-content {
         padding: 10px;
-        max-height: none !important;
+        font-size: 16px;
     }
 
     .profile-pic {
-        width: 80px;
-        height: 80px;
-    }
-
-    h1.profile-name {
-        font-size: 24px;
-    }
-
-    #taskbar {
-        font-size: 14px;
-        overflow-x: auto;
-    }
-
-    .task-btn {
-        padding: 4px 8px;
-        font-size: 14px;
-    }
-
-    body {
-        overflow-y: auto !important;
-        align-items: flex-start;
-        padding-top: 20px;
-    }
-
-    #desktop {
-        height: auto;
-        min-height: 100vh;
-        padding-bottom: 60px;
+        width: 60px;
+        height: 60px;
     }
 }
