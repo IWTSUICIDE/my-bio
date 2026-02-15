@@ -8,95 +8,79 @@ function typeWriter() {
         i++;
         setTimeout(typeWriter, 80);
     } else {
-        setTimeout(() => {
+        if (window.innerWidth <= 600) {
+            closeWin('win-terminal');
             openWin('win-info');
-        }, 500);
-        setTimeout(() => {
-            openWin('win-links');
-        }, 1000);
+            setTimeout(() => openWin('win-links'), 300);
+        } else {
+            openWin('win-info');
+            setTimeout(() => openWin('win-links'), 500);
+        }
     }
 }
 
-if(window.innerWidth > 600) {
-    setTimeout(typeWriter, 800);
-} else {
-    openWin('win-info');
-}
+window.onload = () => {
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    if (window.innerWidth <= 600) {
+        closeWin('win-terminal');
+        openWin('win-info');
+        openWin('win-links');
+    } else {
+        setTimeout(typeWriter, 800);
+    }
+};
 
 let zIndexCounter = 100;
 
 function makeDraggable(el) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     const titleBar = el.querySelector('.title-bar');
-    
-    if (titleBar) {
-        titleBar.onmousedown = dragMouseDown;
-        titleBar.ontouchstart = dragMouseDown;
-    }
 
-    el.onmousedown = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
-    el.ontouchstart = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
+    const dragStart = (e) => {
+        zIndexCounter++;
+        el.style.zIndex = zIndexCounter;
+        const event = e.type === 'touchstart' ? e.touches[0] : e;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        document.onmousemove = dragMove;
+        document.ontouchmove = dragMove;
+        document.onmouseup = dragEnd;
+        document.ontouchend = dragEnd;
+    };
 
-function dragMouseDown(e) {
-    if (e.type === 'touchstart') {
-        pos3 = e.touches[0].clientX;
-        pos4 = e.touches[0].clientY;
-    } else {
-        e = e || window.event;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-    }
-    document.onmouseup = closeDragElement;
-    document.ontouchend = closeDragElement;
-    document.onmousemove = elementDrag;
-    document.ontouchmove = elementDrag;
-}
-
-    function elementDrag(e) {
-        e = e || window.event;
-        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-        pos1 = pos3 - clientX;
-        pos2 = pos4 - clientY;
-        pos3 = clientX;
-        pos4 = clientY;
+    const dragMove = (e) => {
+        if (e.type === 'touchmove') e.preventDefault();
+        const event = e.type === 'touchmove' ? e.touches[0] : e;
+        pos1 = pos3 - event.clientX;
+        pos2 = pos4 - event.clientY;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
         el.style.top = (el.offsetTop - pos2) + "px";
         el.style.left = (el.offsetLeft - pos1) + "px";
-    }
+    };
 
-    function closeDragElement() {
-        document.onmouseup = null;
+    const dragEnd = () => {
         document.onmousemove = null;
-        document.ontouchend = null;
         document.ontouchmove = null;
+        document.onmouseup = null;
+        document.ontouchend = null;
+    };
+
+    if (titleBar) {
+        titleBar.onmousedown = dragStart;
+        titleBar.ontouchstart = dragStart;
     }
 }
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-        document.ontouchend = null;
-        document.ontouchmove = null;
-    }
-}
-
-document.querySelectorAll('.window').forEach(win => {
-    makeDraggable(win);
-});
+document.querySelectorAll('.window').forEach(makeDraggable);
 
 function openWin(id) {
     const win = document.getElementById(id);
-    if(win.style.display === 'flex') {
-        zIndexCounter++;
-        win.style.zIndex = zIndexCounter;
-        return;
-    }
     win.style.display = 'flex';
     zIndexCounter++;
     win.style.zIndex = zIndexCounter;
-    
-    win.style.animation = 'none';
-    win.offsetHeight; 
     win.style.animation = 'bootUp 0.3s ease-out forwards';
 }
 
@@ -104,66 +88,48 @@ function closeWin(id) {
     document.getElementById(id).style.display = 'none';
 }
 
-function minimize(id) {
-    closeWin(id);
-}
-
 function updateClock() {
     const now = new Date();
-    const clockElement = document.getElementById('clock');
-    if (clockElement) {
-        clockElement.innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const clock = document.getElementById('clock');
+    if (clock) {
+        clock.innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                          now.getMinutes().toString().padStart(2, '0');
     }
 }
-setInterval(updateClock, 1000);
-updateClock();
 
 const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*';
-const characters = chars.split('');
-const fontSize = 16;
-let columns = canvas.width/fontSize;
 let drops = [];
+const fontSize = 16;
 
 function initMatrix() {
-    columns = canvas.width/fontSize;
-    drops = [];
-    for(let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const columns = canvas.width / fontSize;
+    for (let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
 }
-initMatrix();
 
 function drawMatrix() {
-    ctx.fillStyle = 'rgba(0, 0, 170, 0.1)'; 
+    ctx.fillStyle = 'rgba(0, 0, 170, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#00FF00'; 
+    ctx.fillStyle = '#00FF00';
     ctx.font = fontSize + 'px monospace';
-
-    for(let i = 0; i < drops.length; i++) {
-        const text = characters[Math.floor(Math.random()*characters.length)];
-        ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-
-        if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
-            drops[i] = 0;
+    for (let i = 0; i < drops.length; i++) {
+        const text = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*".split('')[Math.floor(Math.random() * 40)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
     }
 }
+
+window.addEventListener('resize', initMatrix);
+initMatrix();
 setInterval(drawMatrix, 50);
 
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.onkeydown = function(e) {
-    if (e.keyCode == 123 || 
-        (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) || 
-        (e.ctrlKey && e.keyCode == 85)) {
+document.oncontextmenu = () => false;
+document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','C','J'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
         return false;
     }
-};
+});
