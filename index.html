@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER@SYSTEM:~$ PROFILE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bsod-blue: #0000AA; 
+            --pure-blue: #0000FF;
+            --phosphor-white: #E0E0E0;
+            --phosphor-green: #39ff14;
+            --phosphor-yellow: #FFFF00;
+            --window-bg: #000088;
+            --border-light: #aaaaff;
+            --border-dark: #000055;
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><rect width="12" height="20" fill="white"/></svg>'), auto;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--pure-blue);
+            font-family: 'VT323', monospace;
+            color: var(--phosphor-white);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            user-select: none;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            animation: flicker 0.15s infinite;
+        }
+
+        .crt-scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 9998;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            50% { opacity: 0.95; }
+            100% { opacity: 0.98; }
+        }
+
+        #desktop {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: var(--bsod-blue);
+            overflow: hidden;
+            padding: 20px;
+        }
+        
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        .bg-art {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            pointer-events: none;
+            color: rgba(170, 170, 255, 0.15);
+            text-shadow: 0 0 10px rgba(170, 170, 255, 0.3);
+            font-size: 24px;
+            line-height: 24px;
+            white-space: pre;
+            text-align: center;
+            font-family: monospace;
+            font-weight: bold;
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.02); }
+        }
+
+        .window {
+            position: absolute;
+            background: var(--window-bg);
+            border: 2px solid var(--phosphor-white);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            min-width: 300px;
+            max-width: 600px;
+            animation: bootUp 0.3s ease-out forwards;
+        }
+
+        @keyframes bootUp {
+            0% { transform: scale(0.1) skewX(20deg); opacity: 0; }
+            80% { transform: scale(1.02) skewX(-2deg); opacity: 1; }
+            100% { transform: scale(1) skewX(0); opacity: 1; }
+        }
+
+        .title-bar {
+            background: var(--phosphor-white);
+            color: var(--bsod-blue);
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            cursor: grab;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--phosphor-white);
+        }
+
+        .title-bar:active {
+            cursor: grabbing;
+        }
+
+        .window-controls span {
+            border: 1px solid var(--bsod-blue);
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .window-controls span:hover {
+            background: var(--bsod-blue);
+            color: var(--phosphor-white);
+        }
+
+        .window-content {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1.profile-name {
+            margin: 10px 0 5px 0;
+            font-size: 32px;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        h2.profile-role {
+            margin: 0 0 20px 0;
+            font-size: 22px;
+            color: var(--phosphor-yellow);
+            font-weight: normal;
+        }
+
+        p.profile-bio {
+            margin-bottom: 5px;
+            line-height: 1.4;
+            max-width: 90%;
+            padding: 10px 0;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--phosphor-white);
+            background: #000;
+            object-fit: cover;
+            margin-bottom: 10px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background: var(--bsod-blue);
+            color: var(--phosphor-white);
+            border: 2px solid var(--phosphor-white);
+            padding: 10px;
+            font-size: 20px;
+            font-family: 'VT323', monospace;
+            text-transform: uppercase;
+            transition: all 0.1s;
+            box-shadow: inset 2px 2px 0px rgba(255,255,255,0.1), 4px 4px 0px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .social-btn:hover {
+            background: var(--phosphor-white);
+            color: var(--bsod-blue);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.5);
+        }
+
+        .social-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .social-btn::before {
+            content: "> ";
+            position: absolute;
+            left: 15px;
+            opacity: 0;
+        }
+        .social-btn:hover::before {
+            opacity: 1;
+        }
+
+        .prompt { color: var(--phosphor-green); }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background: var(--phosphor-green);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        #taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--phosphor-white);
+            padding: 4px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+            border-top: 2px solid var(--phosphor-white);
+        }
+
+        .task-btn {
+            background: var(--bsod-blue);
+            color: var(--phosphor-white);
+            border: none;
+            padding: 4px 12px;
+            font-family: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: inset 2px 2px 0px rgba(255,255,255,0.2), inset -2px -2px 0px rgba(0,0,0,0.5);
+        }
+
+        .task-btn:active, .task-btn.active {
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
+            background: var(--border-dark);
+            transform: translateY(1px);
+        }
+        
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: var(--bsod-blue); border-left: 1px solid var(--phosphor-white); }
+        ::-webkit-scrollbar-thumb { background: var(--phosphor-white); border: 1px solid var(--bsod-blue); }
+
+        @media (max-width: 600px) {
+            .window {
+                width: 90% !important;
+                left: 5% !important;
+                position: absolute !important;
+            }
+            #win-info { top: 5% !important; }
+            #win-links { top: 60% !important; }
+            #win-terminal { display: none !important; }
+            .bg-art { font-size: 14px; opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="crt-overlay"></div>
+<div class="crt-scanline"></div>
+<canvas id="matrixCanvas" class="matrix-rain"></canvas>
+
+<div id="desktop">
+    
+    <div class="bg-art">
+   .:::.           .:::.
+.d$$$$$$$b.     .d$$$$$$$b.
+.d$P*'   '*7$b. .d$P*'   '*7$b.
+:$:'       ':$$V$$:        ':$:.
+:$$'          ':$:'          '$$:
+:$$             '             $$:
+':$.                         .$:'
+:$:                         :$:
+'$b                         d$'
+:$:                       :$:
+'$:                     :$'
+ '$:                   :$'
+  '$:.               .:$'
+    '$:.           .:$'
+      '%:.       .:%'
+        '*.     .*'
+           ' . '
+    </div>
+
+    <div class="window" id="win-terminal" style="top: 50px; left: 50px; width: 500px; z-index: 5;">
+        <div class="title-bar">
+            <span>CMD.EXE</span>
+            <div class="window-controls">
+                <span onclick="closeWin('win-terminal')">X</span>
+            </div>
+        </div>
+        <div class="window-content" style="text-align: left; align-items: flex-start;">
+            <div style="margin-bottom: 10px; color: #aaaaff;">Microsoft(R) Windows 1337 [Version 1.0] <br>(C) Copyright 1985-2026</div>
+            <div class="cmd-line">
+                <span class="prompt">IWTSUICIDE@system:~$</span>
+                <span id="typewriter"></span><span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="win-info" style="top: 15%; left: 15%; width: 350px; z-index: 10; display: none;">
+        <div class="title-bar">
+            <span>BIO.TXT</span>
+            <div class="window-controls">
+                <span onclick="minimize('win-info')">_</span>
+                <span onclick="closeWin('win-info')">X</span>
+            </div>
+        </div>
+        <div class="window-content">
+            <img src="https://i.imgur.com/3765OMy.jpeg" alt="Profile" class="profile-pic">
+            
+            <h1 class="profile-name">iwtsuicide</h1>
+            <h2 class="profile-role">&lt;хтонь.&gt;</h2>
+            
+            <p class="profile-bio">
+                Ёщё не всезнайка  <br>
+                Всеведение - божья альма-матер.
+            </p>
+            <br>
+            <div style="width: 100%; border-top: 1px dashed var(--border-light); padding-top: 10px;">
+                Статус: <span style="color:var(--phosphor-green); animation: blink 2s infinite;">is reading</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="win-links" style="top: 25%; left: 50%; width: 320px; z-index: 11; display: none;">
+        <div class="title-bar">
+            <span>LINKS.EXE</span>
+            <div class="window-controls">
+                <span onclick="minimize('win-links')">_</span>
+                <span onclick="closeWin('win-links')">X</span>
+            </div>
+        </div>
+        <div class="window-content">
+            <p style="margin-bottom: 15px; color: #aaaaff;">> INITIALIZING CONNECTION...</p>
+            <div class="social-links">
+                <a href="https://t.me/wie_by_thoughts" target="_blank" class="social-btn">TELEGRAM</a>
+                <a href="mailto:iwtsuicide@yandex.ru" class="social-btn">iwtsuicide@yandex.ru</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="taskbar">
+    <button class="task-btn" onclick="openWin('win-terminal')">CMD</button>
+    <button class="task-btn" onclick="openWin('win-info')">BIO</button>
+    <button class="task-btn" onclick="openWin('win-links')">LINKS</button>
+    <div style="flex-grow: 1;"></div>
+    <div style="padding: 4px 12px; color: blue; font-weight: bold; align-self: center;" id="clock">00:00</div>
+</div>
+
+<script>
+    const textToType = "sh ./init_system.sh -all";
+    const typeWriterElement = document.getElementById('typewriter');
+    let i = 0;
+
+    function typeWriter() {
+        if (i < textToType.length) {
+            typeWriterElement.innerHTML += textToType.charAt(i);
+            i++;
+            setTimeout(typeWriter, 80);
+        } else {
+            setTimeout(() => {
+                openWin('win-info');
+            }, 500);
+            setTimeout(() => {
+                openWin('win-links');
+            }, 1000);
+        }
+    }
+    
+    if(window.innerWidth > 600) {
+        setTimeout(typeWriter, 800);
+    } else {
+        document.getElementById('win-info').style.display = 'flex';
+        document.getElementById('win-links').style.display = 'flex';
+    }
+
+    let zIndexCounter = 100;
+    
+    function makeDraggable(el) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        const titleBar = el.querySelector('.title-bar');
+        
+        if (titleBar) {
+            titleBar.onmousedown = dragMouseDown;
+            titleBar.ontouchstart = dragMouseDown;
+        }
+
+        el.onmousedown = function() {
+            zIndexCounter++;
+            el.style.zIndex = zIndexCounter;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            if(e.type === 'touchstart') {
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+            } else {
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+            }
+            
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+            document.ontouchend = closeDragElement;
+            document.ontouchmove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+            pos1 = pos3 - clientX;
+            pos2 = pos4 - clientY;
+            pos3 = clientX;
+            pos4 = clientY;
+            
+            el.style.top = (el.offsetTop - pos2) + "px";
+            el.style.left = (el.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+            document.ontouchend = null;
+            document.ontouchmove = null;
+        }
+    }
+
+    document.querySelectorAll('.window').forEach(win => {
+        makeDraggable(win);
+    });
+
+    function openWin(id) {
+        const win = document.getElementById(id);
+        if(win.style.display === 'flex') {
+            zIndexCounter++;
+            win.style.zIndex = zIndexCounter;
+            return;
+        }
+        win.style.display = 'flex';
+        zIndexCounter++;
+        win.style.zIndex = zIndexCounter;
+        
+        win.style.animation = 'none';
+        win.offsetHeight; 
+        win.style.animation = 'bootUp 0.3s ease-out forwards';
+    }
+
+    function closeWin(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+    
+    function minimize(id) {
+        closeWin(id);
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*';
+    const characters = chars.split('');
+    const fontSize = 16;
+    let columns = canvas.width/fontSize;
+    let drops = [];
+
+    function initMatrix() {
+        columns = canvas.width/fontSize;
+        drops = [];
+        for(let x = 0; x < columns; x++) drops[x] = Math.random() * canvas.height;
+    }
+    initMatrix();
+
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 170, 0.1)'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00FF00'; 
+        ctx.font = fontSize + 'px monospace';
+
+        for(let i = 0; i < drops.length; i++) {
+            const text = characters[Math.floor(Math.random()*characters.length)];
+            ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+            if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+                drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 50);
+
+</script>
+</body>
+</html>
