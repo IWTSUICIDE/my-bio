@@ -125,9 +125,22 @@ body {
 }
 
 @keyframes bootUp {
-    0% { transform: scale(0.1) skewX(20deg); opacity: 0; }
-    80% { transform: scale(1.02) skewX(-2deg); opacity: 1; }
-    100% { transform: scale(1) skewX(0); opacity: 1; }
+    0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes shutDown {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
+}
+
+.window.opening { animation: bootUp 0.3s ease-out forwards; }
+.window.closing { animation: shutDown 0.2s ease-in forwards; }
+
+.window {
+    display: none;
+    position: absolute;
+    flex-direction: column;
 }
 
 .title-bar {
@@ -301,48 +314,41 @@ p.profile-bio {
 
 @media (max-width: 600px) {
     body {
-        position: fixed;
-        width: 100%;
-        height: 100%;
         overflow-y: auto !important;
         overflow-x: hidden;
+        height: auto;
+        align-items: flex-start;
     }
 
     #desktop {
-        height: 1000px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+        padding-bottom: 80px;
+        height: auto;
+        min-height: 120vh;
     }
-
-    .bg-art { display: none; }
 
     .window {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 95% !important;
-        left: 2.5% !important;
+        margin-bottom: 20px;
+        max-height: none !important;
     }
 
-
-    #win-info {
-        top: 20px !important;
-    }
-
-
-    #win-links {
-        top: 400px !important; 
-    }
-
-
-    #win-terminal {
-        top: 10px !important;
-        z-index: 10001;
-    }
+    #win-terminal { order: 1; }
+    #win-info { order: 2; }
+    #win-links { order: 3; }
 
     #taskbar {
         position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        display: flex !important;
-        z-index: 10005;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10000;
         background: var(--phosphor-white);
-        padding: 4px;
     }
 }
