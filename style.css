@@ -142,6 +142,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
     border-bottom: 2px solid var(--phosphor-white);
+    touch-action: none;
 }
 
 .title-bar:active {
@@ -301,9 +302,9 @@ p.profile-bio {
 @media (max-width: 600px) {
     body {
         position: fixed;
-        overflow: hidden;
         width: 100%;
-        height: 100vh;
+        height: 100%;
+        overflow: hidden;
     }
 
     .bg-art {
@@ -314,37 +315,6 @@ p.profile-bio {
         width: 95% !important;
         left: 2.5% !important;
         top: 10% !important;
-        max-height: 80vh;
-    }
-
-    .title-bar {
-        touch-action: none;
-        padding: 8px;
-    }
-
-    .window-content {
-        padding: 10px;
-        font-size: 16px;
-    }
-
-    .profile-pic {
-        width: 70px;
-        height: 70px;
-    }
-
-    h1.profile-name {
-        font-size: 22px;
-        margin: 5px 0;
-    }
-
-    h2.profile-role {
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
-
-    .social-btn {
-        padding: 8px;
-        font-size: 16px;
     }
 
     #taskbar {
@@ -352,22 +322,14 @@ p.profile-bio {
         bottom: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        height: 45px;
-        background: var(--phosphor-white);
-        display: flex;
-        align-items: center;
+        display: flex !important;
         z-index: 10000;
-        padding: 0 5px;
+        background: var(--phosphor-white);
+        padding: 4px;
     }
-
+    
     .task-btn {
-        height: 35px;
-        font-size: 12px;
-        padding: 0 8px;
-    }
-
-    #clock {
+        padding: 4px 8px;
         font-size: 14px;
-        margin-left: auto;
     }
 }
