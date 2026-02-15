@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USER@SYSTEM:~$ PROFILE</title>
-    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=VT323&amp;display=swap" rel="stylesheet">
-    <!-- Подключаем CSS файл -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -100,14 +98,14 @@
 </div>
 
 <div id="taskbar">
-    <button class="task-btn" onclick="openWin('win-terminal')">CMD</button>
-    <button class="task-btn" onclick="openWin('win-info')">BIO</button>
-    <button class="task-btn" onclick="openWin('win-links')">LINKS</button>
+    <button class="task-btn" onclick="toggleWin('win-terminal')">CMD</button>
+    <button class="task-btn" onclick="toggleWin('win-info')">BIO</button>
+    <button class="task-btn" onclick="toggleWin('win-links')">LINKS</button>
     <div style="flex-grow: 1;"></div>
     <div style="padding: 4px 12px; color: blue; font-weight: bold; align-self: center;" id="clock">00:00</div>
 </div>
 
-<!-- Подключаем JS файл в самом конце body -->
+
 <script src="script.js"></script>
 </body>
 </html>
