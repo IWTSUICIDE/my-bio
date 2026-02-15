@@ -20,8 +20,7 @@ function typeWriter() {
 if(window.innerWidth > 600) {
     setTimeout(typeWriter, 800);
 } else {
-    document.getElementById('win-info').style.display = 'flex';
-    document.getElementById('win-links').style.display = 'flex';
+    openWin('win-info');
 }
 
 let zIndexCounter = 100;
@@ -38,17 +37,20 @@ function makeDraggable(el) {
     el.onmousedown = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
     el.ontouchstart = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
 
-    function dragMouseDown(e) {
+function dragMouseDown(e) {
+    if (e.type === 'touchstart') {
+        pos3 = e.touches[0].clientX;
+        pos4 = e.touches[0].clientY;
+    } else {
         e = e || window.event;
-        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-        pos3 = clientX;
-        pos4 = clientY;
-        document.onmouseup = closeDragElement;
-        document.ontouchend = closeDragElement;
-        document.onmousemove = elementDrag;
-        document.ontouchmove = elementDrag;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
     }
+    document.onmouseup = closeDragElement;
+    document.ontouchend = closeDragElement;
+    document.onmousemove = elementDrag;
+    document.ontouchmove = elementDrag;
+}
 
     function elementDrag(e) {
         e = e || window.event;
