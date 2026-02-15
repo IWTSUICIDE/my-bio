@@ -35,40 +35,40 @@ function makeDraggable(el) {
         titleBar.ontouchstart = dragMouseDown;
     }
 
-    el.onmousedown = function() {
-        zIndexCounter++;
-        el.style.zIndex = zIndexCounter;
-    }
+    el.onmousedown = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
+    el.ontouchstart = () => { zIndexCounter++; el.style.zIndex = zIndexCounter; };
 
     function dragMouseDown(e) {
         e = e || window.event;
-        if(e.type === 'touchstart') {
-            pos3 = e.touches[0].clientX;
-            pos4 = e.touches[0].clientY;
-        } else {
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-        }
-        
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        pos3 = clientX;
+        pos4 = clientY;
         document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
         document.ontouchend = closeDragElement;
+        document.onmousemove = elementDrag;
         document.ontouchmove = elementDrag;
     }
 
     function elementDrag(e) {
         e = e || window.event;
-        let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-        let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
         pos1 = pos3 - clientX;
         pos2 = pos4 - clientY;
         pos3 = clientX;
         pos4 = clientY;
-        
         el.style.top = (el.offsetTop - pos2) + "px";
         el.style.left = (el.offsetLeft - pos1) + "px";
     }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+    }
+}
 
     function closeDragElement() {
         document.onmouseup = null;
