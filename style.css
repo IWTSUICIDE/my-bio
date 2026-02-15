@@ -299,13 +299,60 @@ p.profile-bio {
 ::-webkit-scrollbar-thumb { background: var(--phosphor-white); border: 1px solid var(--bsod-blue); }
 
 @media (max-width: 600px) {
-    .window {
-        width: 90% !important;
-        left: 5% !important;
-        position: absolute !important;
+    .bg-art {
+        font-size: 8px !important;
+        line-height: 8px !important;
+        opacity: 0.3;
+        width: 100%;
+        text-align: center;
     }
-    #win-info { top: 5% !important; }
-    #win-links { top: 60% !important; }
-    #win-terminal { display: none !important; }
-    .bg-art { font-size: 14px; opacity: 0.2; }
+
+    .window {
+        width: 95% !important;
+        left: 2.5% !important;
+        position: relative !important;
+        top: auto !important;
+        margin-bottom: 20px;
+        max-height: none !important;
+    }
+
+    #win-terminal {
+        display: none !important;
+    }
+
+    .window-content {
+        padding: 10px;
+        max-height: none !important;
+    }
+
+    .profile-pic {
+        width: 80px;
+        height: 80px;
+    }
+
+    h1.profile-name {
+        font-size: 24px;
+    }
+
+    #taskbar {
+        font-size: 14px;
+        overflow-x: auto;
+    }
+
+    .task-btn {
+        padding: 4px 8px;
+        font-size: 14px;
+    }
+
+    body {
+        overflow-y: auto !important;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    #desktop {
+        height: auto;
+        min-height: 100vh;
+        padding-bottom: 60px;
+    }
 }
