@@ -300,47 +300,26 @@ p.profile-bio {
 
 @media (max-width: 600px) {
     body {
-        overflow: hidden;
-        height: 100vh;
         position: fixed;
+        overflow: hidden;
         width: 100%;
+        height: 100vh;
     }
 
     .bg-art {
-        font-size: 10px !important;
-        line-height: 10px !important;
-        opacity: 0.2;
+        display: none;
     }
 
     .window {
-        width: 90% !important;
-        min-width: unset !important;
-        max-height: 70vh;
+        width: 95% !important;
+        left: 2.5% !important;
+        top: 10% !important;
+        max-height: 80vh;
     }
 
-    #win-terminal {
-        display: flex !important;
-        top: 5% !important;
-        left: 5% !important;
-        width: 90% !important;
-    }
-
-    #win-info {
-        top: 15% !important;
-        left: 5% !important;
-    }
-
-    #win-links {
-        top: 40% !important;
-        left: 5% !important;
-    }
-
-    #taskbar {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        z-index: 9999;
+    .title-bar {
+        touch-action: none;
+        padding: 8px;
     }
 
     .window-content {
@@ -349,7 +328,46 @@ p.profile-bio {
     }
 
     .profile-pic {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
+    }
+
+    h1.profile-name {
+        font-size: 22px;
+        margin: 5px 0;
+    }
+
+    h2.profile-role {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .social-btn {
+        padding: 8px;
+        font-size: 16px;
+    }
+
+    #taskbar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 45px;
+        background: var(--phosphor-white);
+        display: flex;
+        align-items: center;
+        z-index: 10000;
+        padding: 0 5px;
+    }
+
+    .task-btn {
+        height: 35px;
+        font-size: 12px;
+        padding: 0 8px;
+    }
+
+    #clock {
+        font-size: 14px;
+        margin-left: auto;
     }
 }
