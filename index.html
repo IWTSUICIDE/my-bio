@@ -16,7 +16,6 @@
 <canvas id="matrixCanvas" class="matrix-rain"></canvas>
 
 <div id="desktop">
-    
     <div class="bg-art">
    .:::.           .:::.
 .d$$$$$$$b.     .d$$$$$$$b.
@@ -53,48 +52,42 @@
         </div>
     </div>
 
-    <div class="window" id="win-info" style="top: 15%; left: 15%; width: 350px; z-index: 10; display: none;">
+    <div class="window" id="win-info" style="top: 15%; left: 15%; width: 350px;">
         <div class="title-bar">
             <span>BIO.TXT</span>
             <div class="window-controls">
-                <span onclick="minimize('win-info')">_</span>
                 <span onclick="closeWin('win-info')">X</span>
             </div>
         </div>
         <div class="window-content">
             <img src="https://i.imgur.com/3765OMy.jpeg" alt="Profile" class="profile-pic">
-            
             <h1 class="profile-name">iwtsuicide</h1>
             <h2 class="profile-role">&lt;хтонь.&gt;</h2>
-            
             <p class="profile-bio">
-                Ёщё не всезнайка  <br>
+                Ёщё не всезнайка <br>
                 Всеведение - божья альма-матер.
             </p>
-            <br>
-            <div style="width: 100%; border-top: 1px dashed var(--border-light); padding-top: 10px;">
-                Статус: <span style="color:var(--phosphor-green); animation: blink 2s infinite;">is reading</span>
+            <div style="width: 100%; border-top: 1px dashed var(--border-light); padding-top: 10px; margin-top: 10px;">
+                Статус: <span style="color:var(--phosphor-green);">is reading</span>
             </div>
         </div>
     </div>
 
-    <div class="window" id="win-links" style="top: 25%; left: 50%; width: 320px; z-index: 11; display: none;">
+    <div class="window" id="win-links" style="top: 25%; left: 50%; width: 320px;">
         <div class="title-bar">
             <span>LINKS.EXE</span>
             <div class="window-controls">
-                <span onclick="minimize('win-links')">_</span>
                 <span onclick="closeWin('win-links')">X</span>
             </div>
         </div>
         <div class="window-content">
-            <p style="margin-bottom: 15px; color: #aaaaff;">> INITIALIZING CONNECTION...</p>
+            <p style="margin-bottom: 15px; color: #aaaaff;">> INITIALIZING...</p>
             <div class="social-links">
                 <a href="https://t.me/wie_by_thoughts" target="_blank" class="social-btn">TELEGRAM</a>
-                <a href="mailto:iwtsuicide@yandex.ru" class="social-btn">iwtsuicide@yandex.ru</a>
+                <a href="mailto:iwtsuicide@yandex.ru" class="social-btn">EMAIL</a>
             </div>
         </div>
     </div>
-
 </div>
 
 <div id="taskbar">
@@ -102,9 +95,8 @@
     <button class="task-btn" onclick="toggleWin('win-info')">BIO</button>
     <button class="task-btn" onclick="toggleWin('win-links')">LINKS</button>
     <div style="flex-grow: 1;"></div>
-    <div style="padding: 4px 12px; color: blue; font-weight: bold; align-self: center;" id="clock">00:00</div>
+    <div id="clock" style="padding: 4px 12px; color: blue; font-weight: bold;">00:00</div>
 </div>
-
 
 <script src="script.js"></script>
 </body>
