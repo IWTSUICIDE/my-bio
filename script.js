@@ -11,7 +11,7 @@ function updateClock() {
 
 function toggleWin(id) {
     const win = document.getElementById(id);
-    if (win.style.display === 'flex') {
+    if (win.style.display === 'flex' && !win.classList.contains('closing')) {
         closeWin(id);
     } else {
         openWin(id);
@@ -29,11 +29,8 @@ function openWin(id) {
 
 function closeWin(id) {
     const win = document.getElementById(id);
-    if (win.style.display === 'none') return;
-    
     win.classList.remove('opening');
     win.classList.add('closing');
-    
     setTimeout(() => {
         win.style.display = 'none';
         win.classList.remove('closing');
@@ -60,7 +57,6 @@ function typeWriter() {
 window.onload = () => {
     updateClock();
     setInterval(updateClock, 1000);
-    
     if (window.innerWidth <= 600) {
         openWin('win-info');
         openWin('win-links');
@@ -73,33 +69,24 @@ window.onload = () => {
 function makeDraggable(el) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     const titleBar = el.querySelector('.title-bar');
+    if (!titleBar) return;
 
-    const dragStart = (e) => {
+    titleBar.onmousedown = (e) => {
         if (window.innerWidth <= 600) return;
         zIndexCounter++;
         el.style.zIndex = zIndexCounter;
-        const event = e.type === 'touchstart' ? e.touches[0] : e;
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        document.onmousemove = dragMove;
-        document.onmouseup = dragEnd;
-    };
-
-    const dragMove = (e) => {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        el.style.top = (el.offsetTop - pos2) + "px";
-        el.style.left = (el.offsetLeft - pos1) + "px";
+        document.onmousemove = (ev) => {
+            pos1 = pos3 - ev.clientX;
+            pos2 = pos4 - ev.clientY;
+            pos3 = ev.clientX;
+            pos4 = ev.clientY;
+            el.style.top = (el.offsetTop - pos2) + "px";
+            el.style.left = (el.offsetLeft - pos1) + "px";
+        };
+        document.onmouseup = () => { document.onmousemove = null; };
     };
-
-    const dragEnd = () => {
-        document.onmousemove = null;
-        document.onmouseup = null;
-    };
-
-    if (titleBar) titleBar.onmousedown = dragStart;
 }
 
 document.querySelectorAll('.window').forEach(makeDraggable);
@@ -116,6 +103,7 @@ function drawMatrix() {
     ctx.fillStyle = 'rgba(0, 0, 170, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00FF00';
+    ctx.font = '16px monospace';
     for (let i = 0; i < drops.length; i++) {
         ctx.fillText("01"[Math.floor(Math.random()*2)], i*16, drops[i]*16);
         if (drops[i]*16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
@@ -124,5 +112,9 @@ function drawMatrix() {
 }
 initMatrix();
 setInterval(drawMatrix, 50);
+window.onresize = initMatrix;
 
 document.oncontextmenu = () => false;
+document.onkeydown = e => {
+    if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 67, 74].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) return false;
+};
