@@ -1,10 +1,11 @@
 @echo off
+chcp 1251 >nul
 cd /d "C:\Scripts"
-echo 🔄 Синхронизация с GitHub...
+echo Syncing with GitHub...
 git add .
-set /p msg="💬 Комментарий к обновлению (или нажмите Enter для авто): "
+set /p msg=Comment (or press Enter for auto): 
 if "%msg%"=="" set msg=auto: update %date% %time%
 git commit -m "%msg%"
 git push origin master
-echo ✅ Готово! Сайт обновится на https://iwtsuicide.github.io/my-bio через 1-2 минуты.
+echo Done! Site will update at https://iwtsuicide.github.io/my-bio
 pause
