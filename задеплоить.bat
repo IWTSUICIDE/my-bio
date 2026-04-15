@@ -1,27 +1,18 @@
 @echo off
 chcp 1251 >nul
 cd /d "C:\Scripts"
-
-:: Локальный превью - открывается сразу
-echo 👁 Открываю локальную версию...
+echo 👁 Opening local preview...
 start "" "index.html"
-
-:: Меню действий
 echo.
-echo Выбери действие:
-echo [1] Только локальный превью (быстро)
-echo [2] Локально + задеплоить на GitHub
-echo [3] Выход
-set /p choice=Ввод (1/2/3): 
-
+echo Choose action:
+echo [1] Local only (fast)
+echo [2] Local + deploy to GitHub
+echo [3] Exit
+set /p choice=Enter (1/2/3):
 if "%choice%"=="1" goto end
 if "%choice%"=="3" goto end
-
-:: === Деплой (если выбрано) ===
 echo.
-echo 🔄 Синхронизация с GitHub...
-
-:: Auto-increment version
+echo 🔄 Syncing with GitHub...
 for /f "tokens=2 delims=[]" %%a in ('findstr /i "Version" index.html') do set "ver=%%a"
 set "ver=%ver:Version =%"
 set "ver=%ver:]=%"
@@ -29,21 +20,16 @@ for /f "tokens=1,2,3 delims=." %%a in ("%ver%") do set "major=%%a" & set "minor=
 set /a patch+=1
 set "newver=%major%.%minor%.%patch%"
 echo Version: %ver% -^> %newver%
-
-:: Update version in files
 powershell -Command "(Get-Content index.html) -replace 'Version %ver%', 'Version %newver%' | Set-Content index.html"
 powershell -Command "(Get-Content style.css) -replace '--version: \"%ver%\"', '--version: \"%newver%\"' | Set-Content style.css"
-powershell -Command "(Get-Content index.html) -replace 'style.css\?v=%ver%', 'style.css?v=%newver%' | Set-Content index.html"
-
 git config --global credential.helper wincred
 git add .
-set /p msg=Comment (or press Enter for auto): 
+set /p msg=Comment (or Enter for auto):
 if "%msg%"=="" set msg=chore: v%newver% auto-update
 git commit -m "%msg%"
 git push origin main
-echo ✅ Done! v%newver% deployed to https://iwtsuicide.github.io/my-bio
-
+echo ✅ Done! v%newver% at https://iwtsuicide.github.io/my-bio
 :end
 echo.
-echo Нажмите любую клавишу для выхода...
-pause >nul
+echo Press any key to exit...
+pause
