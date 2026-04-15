@@ -65,11 +65,17 @@ function typeWriter() {
 }
 
 function cycleTheme() {
+    const body = document.body;
     const themes = ['retro', 'cyber'];
-    const current = document.body.dataset.theme || 'retro';
+    const current = body.dataset.theme || 'retro';
     const next = themes[(themes.indexOf(current) + 1) % themes.length];
-    document.body.dataset.theme = next;
-    localStorage.setItem('bio-theme', next);
+    
+    body.classList.add('theme-changing');
+    setTimeout(() => {
+        body.dataset.theme = next;
+        localStorage.setItem('bio-theme', next);
+        setTimeout(() => body.classList.remove('theme-changing'), 200);
+    }, 100);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
