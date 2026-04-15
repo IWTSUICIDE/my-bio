@@ -163,13 +163,12 @@ body {
     box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
     flex-direction: column;
     min-width: 300px;
-    transition: transform 0.2s ease-out, opacity 0.2s ease-out, filter 0.3s ease;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.3s ease;
     will-change: transform, opacity;
-    filter: drop-shadow(0 0 5px var(--border-light));
 }
 
 .window:hover {
-    filter: drop-shadow(0 0 15px var(--border-light)) drop-shadow(0 0 25px var(--border-light));
+    box-shadow: 0 0 15px var(--border-light), 0 0 30px var(--border-light), 0 0 45px var(--border-light);
 }
 
 .window:hover {
@@ -220,7 +219,12 @@ body {
     border: 2px solid var(--phosphor-white);
     object-fit: cover;
     margin-bottom: 10px;
-    animation: glow-pulse 3s infinite ease-in-out;
+    box-shadow: 0 0 5px var(--border-light);
+    transition: box-shadow 0.3s ease;
+}
+
+.profile-pic:hover {
+    box-shadow: 0 0 15px var(--border-light), 0 0 30px var(--border-light);
 }
 
 .profile-name {
