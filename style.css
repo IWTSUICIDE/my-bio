@@ -11,6 +11,7 @@
     --glitch-offset: 2px;
     --glitch-color-1: #ff00ff;
     --glitch-color-2: #00ffff;
+    --version: "1.0.1";
 }
 
 [data-theme="cyber"] {
@@ -163,12 +164,12 @@ body {
     box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
     flex-direction: column;
     min-width: 300px;
-    transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
     will-change: transform, opacity;
 }
 
 .window:hover {
-    box-shadow: 0 0 15px var(--border-light), 0 0 30px var(--border-light), 0 0 45px var(--border-light);
+    box-shadow: 0 0 12px var(--border-light), 0 0 24px var(--border-light);
 }
 
 .window:hover {
