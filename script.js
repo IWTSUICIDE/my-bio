@@ -129,6 +129,12 @@ const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
 let drops = [];
 let matrixInterval = 50;
+let mouseX = 0, mouseY = 0;
+let targetOffsetX = 0, targetOffsetY = 0;
+let currentOffsetX = 0, currentOffsetY = 0;
+const parallaxStrength = 0.08;
+const smoothFactor = 0.1;
+
 function initMatrix() {
     const isMobile = window.innerWidth <= 600;
     canvas.width = window.innerWidth;
@@ -145,19 +151,42 @@ function initMatrix() {
         canvas.style.opacity = '0.15';
     }
 }
+
 function drawMatrix() {
     const isMobile = window.innerWidth <= 600;
     const fontSize = isMobile ? 20 : 16;
+    
+    currentOffsetX += (targetOffsetX - currentOffsetX) * smoothFactor;
+    currentOffsetY += (targetOffsetY - currentOffsetY) * smoothFactor;
+    
     ctx.fillStyle = 'rgba(0, 0, 170, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00FF00';
     ctx.font = fontSize + 'px monospace';
+    
     for (let i = 0; i < drops.length; i++) {
-        ctx.fillText("01"[Math.floor(Math.random()*2)], i*fontSize, drops[i]*fontSize);
-        if (drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        const x = i * fontSize + currentOffsetX;
+        const y = drops[i] * fontSize + currentOffsetY;
+        ctx.fillText("01"[Math.floor(Math.random()*2)], x, y);
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
     }
 }
+
+function handleMouseMove(e) {
+    const isMobile = window.innerWidth <= 600;
+    if (isMobile) return;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    targetOffsetX = (e.clientX - centerX) * parallaxStrength;
+    targetOffsetY = (e.clientY - centerY) * parallaxStrength;
+}
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!prefersReducedMotion) {
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+}
+
 initMatrix();
 let matrixAnim = setInterval(drawMatrix, matrixInterval);
 window.onresize = () => { initMatrix(); clearInterval(matrixAnim); matrixAnim = setInterval(drawMatrix, matrixInterval); };
