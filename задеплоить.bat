@@ -1,7 +1,25 @@
 @echo off
 chcp 1251 >nul
 cd /d "C:\Scripts"
-echo Syncing with GitHub...
+
+:: Локальный превью - открывается сразу
+echo 👁 Открываю локальную версию...
+start "" "index.html"
+
+:: Меню действий
+echo.
+echo Выбери действие:
+echo [1] Только локальный превью (быстро)
+echo [2] Локально + задеплоить на GitHub
+echo [3] Выход
+set /p choice=Ввод (1/2/3): 
+
+if "%choice%"=="1" goto end
+if "%choice%"=="3" goto end
+
+:: === Деплой (если выбрано) ===
+echo.
+echo 🔄 Синхронизация с GitHub...
 
 :: Auto-increment version
 for /f "tokens=2 delims=[]" %%a in ('findstr /i "Version" index.html') do set "ver=%%a"
@@ -23,5 +41,9 @@ set /p msg=Comment (or press Enter for auto):
 if "%msg%"=="" set msg=chore: v%newver% auto-update
 git commit -m "%msg%"
 git push origin main
-echo Done! v%newver% deploying to https://iwtsuicide.github.io/my-bio
-pause
+echo ✅ Done! v%newver% deployed to https://iwtsuicide.github.io/my-bio
+
+:end
+echo.
+echo Нажмите любую клавишу для выхода...
+pause >nul
