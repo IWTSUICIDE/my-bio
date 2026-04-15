@@ -6,6 +6,6 @@ git add .
 set /p msg=Comment (or press Enter for auto): 
 if "%msg%"=="" set msg=auto: update %date% %time%
 git commit -m "%msg%"
-git push origin master
+git push origin main
 echo Done! Site will update at https://iwtsuicide.github.io/my-bio
 pause
