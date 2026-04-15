@@ -30,6 +30,16 @@
 * {
     box-sizing: border-box;
     cursor: url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><rect width="12" height="20" fill="white"/></svg>'), auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .crt-overlay, .crt-scanline, .matrix-rain { display: none; }
 }
 
 body {
@@ -38,13 +48,14 @@ body {
     background-color: var(--pure-blue);
     font-family: 'VT323', monospace;
     color: var(--phosphor-white);
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    font-size: clamp(16px, 4vw, 24px);
     user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .crt-overlay {
@@ -152,7 +163,8 @@ body {
     box-shadow: 10px 10px 0px rgba(0,0,0,0.5), 0 0 5px var(--border-light);
     flex-direction: column;
     min-width: 300px;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.2s ease-out, opacity 0.2s ease-out;
+    will-change: transform, opacity;
 }
 
 .window:hover {
@@ -259,15 +271,62 @@ body {
     background: var(--bsod-blue);
     color: var(--phosphor-white);
     border: none;
-    padding: 4px 12px;
+    padding: 8px 16px;
     font-family: inherit;
     cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.task-btn:hover, .task-btn:focus {
+    transform: scale(1.05);
+    outline: 2px solid var(--phosphor-green);
+    outline-offset: 2px;
+}
+
+.task-btn:active {
+    transform: scale(0.98);
 }
 
 @media (max-width: 600px) {
-    body { overflow-y: auto !important; align-items: flex-start; height: auto; }
-    #desktop { display: flex; flex-direction: column; height: auto; min-height: 120vh; padding-bottom: 80px; }
-    .window { position: relative !important; top: 0 !important; left: 0 !important; width: 95% !important; margin-bottom: 20px; }
+    body { 
+        overflow-y: auto !important; 
+        align-items: flex-start; 
+        height: auto; 
+        min-height: 100dvh;
+    }
+    #desktop { 
+        display: flex; 
+        flex-direction: column; 
+        height: auto; 
+        min-height: 100dvh; 
+        padding: 10px 10px 80px; 
+        align-items: center;
+    }
+    .window { 
+        position: relative !important; 
+        top: 0 !important; 
+        left: 0 !important; 
+        width: 95% !important; 
+        max-width: 400px;
+        margin-bottom: 16px; 
+    }
+    .title-bar { padding: 8px 12px; }
+    .window-controls span { 
+        width: 24px; 
+        height: 24px; 
+        margin-left: 8px; 
+        font-size: 18px;
+    }
     .bg-art { display: none; }
-    #taskbar { position: fixed; bottom: 0; }
+    #taskbar { 
+        position: fixed; 
+        bottom: 0; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+        gap: 4px;
+        padding: 8px 4px;
+    }
+    .matrix-rain { opacity: 0.05; }
 }

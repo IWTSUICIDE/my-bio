@@ -37,6 +37,16 @@ function closeWin(id) {
     }, 200);
 }
 
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.window').forEach(win => {
+            if (win.style.display === 'flex' && !win.classList.contains('closing')) {
+                closeWin(win.id);
+            }
+        });
+    }
+});
+
 const textToType = "sh ./init_system.sh -all";
 let charIndex = 0;
 function typeWriter() {
@@ -104,28 +114,47 @@ function makeDraggable(el) {
 
 document.querySelectorAll('.window').forEach(makeDraggable);
 
+document.querySelectorAll('.task-btn, .social-btn, .window-controls span').forEach(el => {
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('focus', function() { this.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
+});
+
 const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
 let drops = [];
+let matrixInterval = 50;
 function initMatrix() {
+    const isMobile = window.innerWidth <= 600;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    for (let x = 0; x < canvas.width / 16; x++) drops[x] = 1;
+    const fontSize = isMobile ? 20 : 16;
+    const columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    for (let x = 0; x < columns; x++) drops[x] = 1;
+    if (isMobile) {
+        matrixInterval = 100;
+        canvas.style.opacity = '0.05';
+    } else {
+        matrixInterval = 50;
+        canvas.style.opacity = '0.15';
+    }
 }
 function drawMatrix() {
+    const isMobile = window.innerWidth <= 600;
+    const fontSize = isMobile ? 20 : 16;
     ctx.fillStyle = 'rgba(0, 0, 170, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00FF00';
-    ctx.font = '16px monospace';
+    ctx.font = fontSize + 'px monospace';
     for (let i = 0; i < drops.length; i++) {
-        ctx.fillText("01"[Math.floor(Math.random()*2)], i*16, drops[i]*16);
-        if (drops[i]*16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        ctx.fillText("01"[Math.floor(Math.random()*2)], i*fontSize, drops[i]*fontSize);
+        if (drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
     }
 }
 initMatrix();
-setInterval(drawMatrix, 50);
-window.onresize = initMatrix;
+let matrixAnim = setInterval(drawMatrix, matrixInterval);
+window.onresize = () => { initMatrix(); clearInterval(matrixAnim); matrixAnim = setInterval(drawMatrix, matrixInterval); };
 
 document.oncontextmenu = () => false;
 document.onkeydown = e => {
