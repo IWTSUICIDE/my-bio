@@ -168,8 +168,8 @@ body {
     will-change: transform, opacity;
 }
 
-.window:hover {
-    box-shadow: 0 0 12px var(--border-light), 0 0 24px var(--border-light);
+#desktop .window:hover {
+    box-shadow: 0 0 12px var(--border-light), 0 0 24px var(--border-light) !important;
 }
 
 .window:hover {
